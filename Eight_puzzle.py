@@ -7,6 +7,7 @@ LEFT = 0
 RIGHT = 1
 UP = 2
 DOWN = 3
+SIZE = 9
 
 
 class EightPuzzle:
@@ -30,19 +31,31 @@ class EightPuzzle:
 
     def move_left(self):
         # implement left
-        return None
+        new_squares = list(self.squares)
+        new_squares[self.idx - 1] = self.squares[self.idx]
+        new_squares[self.idx] = self.squares[self.idx - 1]
+        return EightPuzzle(new_squares)
 
     def move_right(self):
         # implement right
-        return None
+        new_squares = list(self.squares)
+        new_squares[self.idx + 1] = self.squares[self.idx]
+        new_squares[self.idx] = self.squares[self.idx + 1]
+        return EightPuzzle(new_squares)
 
     def move_up(self):
         # implement up
-        return None
+        new_squares = list(self.squares)
+        new_squares[self.idx - 3] = self.squares[self.idx]
+        new_squares[self.idx] = self.squares[self.idx - 3]
+        return EightPuzzle(new_squares)
 
     def move_down(self):
         # implement down
-        return None
+        new_squares = list(self.squares)
+        new_squares[self.idx + 3] = self.squares[self.idx]
+        new_squares[self.idx] = self.squares[self.idx + 3]
+        return EightPuzzle(new_squares)
 
     def get_successors(self):
         successors = []
@@ -111,11 +124,38 @@ class ContainerEntry:
 
 def bfs(initial, goal):
     # implement bfs
+    container = [ContainerEntry(initial, None, None)]
+    visited = set([])
+
+    i = 0
+    while len(container) > 0:
+        node = container.pop(0)
+        if node.puzzle == goal:
+            actions = []
+            while node.action_from_parent is not None:
+                actions.append(node.action_from_parent)
+                node = node.parent
+            return list(reversed(actions))
+
+        # add successors
+        suc = node.get_successors()
+        for s in suc:
+            if s.puzzle not in visited:
+                container.append(s)
+                visited.add(s.puzzle)
+        i += 1
+
     return None
+
+
 
 
 def dfs(initial, goal):
     # implement dfs
+    node = ContainerEntry(initial, None, None)
+    visited = set([])
+    # for successor in  node.get_successors():
+    #     if successor
     return None
 
 
@@ -127,6 +167,21 @@ def main(arglist):
     
     # run bfs solution
     # run dfs solution
+
+    t0 = time.time()
+    for _ in range(50):
+        actions_bfs = bfs(p1, p2)
+    t_bfs = (time.time() - t0) / 50
+    num_actions_bfs = len(actions_bfs)
+
+    t0 = time.time()
+    for _ in range(1):
+        actions_dfs = dfs(p1, p2)
+    t_dfs = (time.time() - t0) / 1
+    num_actions_dfs = len(actions_dfs)
+
+    print(f'BFS: time = {t_bfs} seconds, #actions = {num_actions_bfs}, action = {actions_bfs}\n')
+    print(f'DFS: time = {t_dfs} seconds, #actions = {num_actions_dfs}, action = {actions_dfs}\n')
     
 
 if __name__ == '__main__':
