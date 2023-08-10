@@ -9,7 +9,6 @@ UP = 2
 DOWN = 3
 SIZE = 9
 
-# 1232
 class EightPuzzle:
 
     def __init__(self, squares):
